@@ -50,3 +50,5 @@ samp <- st_join(samp, rv_m, join = st_intersects)
 saveRDS(rv_m, "input/cleaned/ruelles-vertes-merged.rds")
 # save buffers as intermediate for 3-RasterAnalysis.R
 saveRDS(buff, "input/cleaned/buffers.rds")
+# save sampling points 
+saveRDS(samp, "input/cleaned/sampling-points.rds")
