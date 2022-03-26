@@ -45,4 +45,4 @@ mapview(rv) + cc
 
 # Save ------------------------------------------------------
 # cool! everything looks okay so far. Let's save our transformed vector layer and move on 
-saveRDS(rv, "output/ruelles-vertes-transformed.rds")
+saveRDS(rv, "input/cleaned/ruelles-vertes-transformed.rds")

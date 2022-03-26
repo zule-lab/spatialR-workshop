@@ -5,7 +5,7 @@ lapply(p, library, character.only=T)
 
 # Data ------------------------------------------------------
 # let's load in our vector ruelles vertes data 
-rv <- readRDS("output/ruelles-vertes-transformed.rds")
+rv <- readRDS("input/cleaned/ruelles-vertes-transformed.rds")
 
 # Analysis --------------------------------------------------
 # MERGE 
@@ -47,4 +47,4 @@ samp <- st_join(samp, rv_m, join = st_intersects)
 
 # Save ------------------------------------------------------
 # save buffers as intermediate for 3-RasterAnalysis.R
-saveRDS(buff, "output/buffers.rds")
+saveRDS(buff, "input/cleaned/buffers.rds")
