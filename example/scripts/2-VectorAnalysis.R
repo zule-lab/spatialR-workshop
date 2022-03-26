@@ -46,6 +46,5 @@ mapview(rv_m, col.regions = "red") + mapview(samp) # looks great!
 samp <- st_join(samp, rv_m, join = st_intersects)
 
 # Save ------------------------------------------------------
-# save buffers and sampling points as intermediates 
+# save buffers as intermediate for 3-RasterAnalysis.R
 saveRDS(buff, "output/buffers.rds")
-saveRDS(samp, "output/sampling-points.rds")
