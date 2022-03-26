@@ -46,5 +46,7 @@ mapview(rv_m, col.regions = "red") + mapview(samp) # looks great!
 samp <- st_join(samp, rv_m, join = st_intersects)
 
 # Save ------------------------------------------------------
+# save merged ruelles 
+saveRDS(rv_m, "input/cleaned/ruelles-vertes-merged.rds")
 # save buffers as intermediate for 3-RasterAnalysis.R
 saveRDS(buff, "input/cleaned/buffers.rds")
