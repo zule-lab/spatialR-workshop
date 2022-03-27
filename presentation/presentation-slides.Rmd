@@ -157,12 +157,27 @@ mapview(cc_int)
 ---
 class: chapterthree 
 # Visualization
+Going to work through a bit more of a complex example but the take-home is that your visualizations can **scale up or scale down** as you wish! 
+
+- `osmdata` is a REALLY useful package for grabbing layers/features that you can use in your basemaps 
+- `geom_sf` is the function for plotting a sf object in ggplot 
+- `geom_stars` is the function for plotting a stars object in ggplot 
+
+- there are other packages you can use for spatial data visualization... use whatever is easiest for you! Another one I love is called `tmap`
 
 ---
 class: mainconcepts 
 # Resources 
-- [data.table in R Guide](https://www.machinelearningplus.com/data-manipulation/datatable-in-r-complete-guide/)
-
+- [sf](https://r-spatial.github.io/sf/)
+- [stars](https://r-spatial.github.io/stars/articles/stars1.html) 
+- [terra](https://rspatial.org/terra/)
+- [osmdata](https://docs.ropensci.org/osmdata/)
+- [ggplot2](https://ggplot2.tidyverse.org/)
+- [Intro to sf and stars](https://keen-swartz-3146c4.netlify.app/sf.html)
+- [terra vs stars](https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-stars-packages/)
+- [osmdata feature keys](https://wiki.openstreetmap.org/wiki/Map_features)
+- [tmap](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
+- [terra methods](https://rspatial.github.io/terra/reference/terra-package.html)
 
 ```{r, eval = F, echo = F}
 library(pagedown)
