@@ -12,6 +12,19 @@ cc <- read_stars("input/canopy-cover.tif")
 # Buffers ---------------------------------------------------
 # let's intersect our land use/canopy cover with the buffers we created 
 cc_int <- cc[buff]
+mapview(cc_int)
+
+# if we were doing an analysis with a raster like temperature
+# we could aggregate across each buffer and return a value using a function - like mean, max, min, etc.
+a <- aggregate(cc, buff, max)
+
+
+
+# Sample Points ----------------------------------------------
+# we can also extract the raster value at each of our sampling points 
+pts$landuse <- st_extract(cc, pts)
+
+# Bonus: Vectorization ----------------------------------------
 # if we vectorize the raster, we can calculate the percent of each value
 # vectorizing is computationally expensive so I will include the code but not run it 
 # cc <- st_as_sf(cc) # transform to sf object
@@ -29,11 +42,3 @@ cc_int <- cc[buff]
 #                                                    perbuild = build/totarea,
 #                                                    percan = can/totarea,
 #                                                    perwat = wat/totarea)
-
-
-aggregate(cc, buff, max)
-
-# Sample Points ----------------------------------------------
-# we can also extract the raster value at each of our sampling points 
-pts$landuse <- st_extract(cc, pts)
-
