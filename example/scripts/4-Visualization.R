@@ -13,16 +13,19 @@ bb <- c(xmin = -74.0788,
         ymax = 45.7224)
 
 # Island boundary using osmdata
-mtl <- opq(bb) |>
-  add_osm_feature(key = 'place', value = 'island') |>
-  osmdata_sf()
+mtl <- opq(bb) |> # this make a call for any data found within our coordinates
+  add_osm_feature(key = 'place', value = 'island') |> # we select any features that are places + islands
+  osmdata_sf() # transform it into sf object
+# we are returned a list of different types of geometries that match our request
+# we will select the ones we are interested in and combine
 multipolys <- st_make_valid(mtl$osm_multipolygons) # grab multipolygons (large islands)
 polys <- st_make_valid(mtl$osm_polygons) # grab polygons (small islands)
 polys <- st_cast(polys, "MULTIPOLYGON")
 allpolys <- st_as_sf(st_union(polys, multipolys)) # combine geometries and cast as sf
-st_crs(allpolys) = 4326
+st_crs(allpolys) = 4326 # set CRS as EPSG 4326 
 
 # Water
+# going to do the same thing as above but we want water features within our coordinates
 water <- opq(bb) |>
   add_osm_feature(key = 'natural', value = 'water') |>
   osmdata_sf()
@@ -35,6 +38,7 @@ st_crs(wmpols) = 4326
 # Palette set-up in separate script for ease
 source('scripts/0-palette.R')
 
+# define theme for ggplot - can do this in the ggplot script as well if desired
 th <- theme(panel.border = element_rect(size = 1, fill = NA),
             panel.background = element_rect(fill = canadacol),
             panel.grid = element_line(color = gridcol2, size = 0.2),
@@ -42,13 +46,18 @@ th <- theme(panel.border = element_rect(size = 1, fill = NA),
             axis.title = element_blank())
 
 # Plot -------------------------------------------------------
+# transform all layers so they have the same CRS 
+# use EPSG 3347 - same projection that Statistics Canada uses
 mtlcrs <- 3347
 rv <- st_transform(rv, mtlcrs)
 allpolys <- st_transform(allpolys, mtlcrs)
 wmpols <- st_transform(wmpols, mtlcrs)
 
+# want the bounds of our map to be slightly smaller than the entire island
 bbi <- st_bbox(st_buffer(allpolys, 0.75))
 
+# plot all layers together with theme we set above 
+# if we were plotting the raster we could use the geom_stars function
 ggplot() +
   geom_sf(fill = montrealcol, data = allpolys) + 
   geom_sf(fill = rvcol, col = NA, data = rv) + 
