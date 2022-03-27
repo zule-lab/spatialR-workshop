@@ -14,17 +14,28 @@ cc <- read_stars("input/canopy-cover.tif")
 cc_int <- cc[buff]
 mapview(cc_int)
 
-# if we were doing an analysis with a raster like temperature
+# let's calculate the percent of canopy cover (value == 4) in each ruelle
+# number of canopy cover pixels / total number of pixels
+f <- function(x) { length(which(x == 4)) / length(x) }
+# aggregated for each ruelle individually
+tot <- aggregate(cc, buff, f)
+# now add the percent canopy values to the buffer dataset
+buff$percan <- tot$canopy.cover.tif
+
+# NOTE: if we were doing an analysis with a raster like temperature
 # we could aggregate across each buffer and return a value using a function - like mean, max, min, etc.
 a <- aggregate(cc, buff, max)
-
-
 
 # Sample Points ----------------------------------------------
 # we can also extract the raster value at each of our sampling points 
 pts$landuse <- st_extract(cc, pts)
 
-# Bonus: Vectorization ----------------------------------------
+# Save -------------------------------------------------------
+# save buffer as final output 
+# gpkg is a great file output type - and currently how we contribute to the ZULE repository
+write_sf(buff, "output/buffers.gpkg")
+
+# Bonus: Vectorization ---------------------------------------
 # if we vectorize the raster, we can calculate the percent of each value
 # vectorizing is computationally expensive so I will include the code but not run it 
 # cc <- st_as_sf(cc) # transform to sf object
