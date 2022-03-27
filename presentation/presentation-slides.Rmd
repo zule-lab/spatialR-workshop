@@ -74,21 +74,85 @@ LOTS of packages for spatial analysis in R - can get really specific for specifi
 ---
 class: chapterone 
 # Data Exploration 
-Things to NOTE
-- crs 
-- attributes 
-- geometry 
-- FILE SIZE 
-- terra vs stars
+There are some really key things to note when doing data exploration:  
+
+1. DO data exploration (always) but especially spatial data   
+
+--
+
+2. Always make sure you have appropriate, matching CRS   
+
+--
+
+3. Inspect your attributes - including **geometry type**  
+
+--
+
+4. A couple good packages for rasters that are good for different things: `terra` and `stars` are two basic   
+
+--
+
+5. If you use GitHub, pay attention to file size  
 
 
 ---
 class: chaptertwo
 # Vector Analysis with sf 
+Merge polygons with the same ruelle IDs
+
+```{r, eval = F, echo = T}
+rv_m <- rv |>
+  dplyr::group_by(RUELLE_ID) |>
+  dplyr::summarise(geometry = st_union(geometry), 
+                   nhood = first(PROPRIETAI),
+                   codenhood = first(CODE_ARR),
+                   date = first(DATE_AMENA))
+```
+
+---
+class: chaptertwo
+# Vector Analysis with sf 
+Calculate area of our sampling sites 
+```{r, eval = F, echo = T}
+rv_m$area <- st_area(rv_m) 
+class(rv_m$area) # this function returns a vector of class "units" 
+# if we want to use this info in future operations - we need to convert from units to double
+rv_m$area <- as.double(rv_m$area)
+
+```
+
+---
+class: chaptertwo
+# Vector Analysis with sf 
+Produce buffers surrounding sites of interest and produce random sampling points for each 
+```{r, eval = F, echo = T}
+buff <- st_buffer(rv_m, 50) # important note: our projection is in m so 
+samp <- st_sample(rv_m, c(3,3), type = "random", by_polygon = F)
+samp <- st_as_sf(samp)
+```
 
 ---
 class: chaptertwo 
 # Raster Analysis with stars
+Raster analysis can be a bit trickier but using `stars` for rasters allows us to work tightly with the `sf` package.   
+
+Functions `aggregate` and `st_extract` can be especially useful, depending on our goals 
+
+```{r, eval = T, echo = F, warning = F, message = F, fig.align='center'}
+library(sf)
+library(stars)
+library(mapview)
+
+# Data ------------------------------------------------------
+buff <- readRDS("/home/icrichmond/Repositories/workshops/spatial-r/example/input/cleaned/buffers.rds")
+cc <- read_stars("/home/icrichmond/Repositories/workshops/spatial-r/example/input/canopy-cover.tif")
+
+# Buffers ---------------------------------------------------
+# let's intersect our land use/canopy cover with the buffers we created 
+cc_int <- cc[buff]
+mapview(cc_int)
+
+```
 
 ---
 class: chapterthree 
