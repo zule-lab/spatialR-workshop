@@ -144,8 +144,8 @@ library(stars)
 library(mapview)
 
 # Data ------------------------------------------------------
-buff <- readRDS("/home/icrichmond/Repositories/workshops/spatial-r/example/input/cleaned/buffers.rds")
-cc <- read_stars("/home/icrichmond/Repositories/workshops/spatial-r/example/input/canopy-cover.tif")
+buff <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/workshops/spatial-r/example/input/cleaned/buffers.rds")
+cc <- read_stars("C:/Users/I_RICHMO/Documents/Repositories/workshops/spatial-r/example/input/canopy-cover.tif")
 
 # Buffers ---------------------------------------------------
 # let's intersect our land use/canopy cover with the buffers we created 
