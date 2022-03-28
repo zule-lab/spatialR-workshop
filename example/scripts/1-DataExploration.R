@@ -1,6 +1,6 @@
 # Packages --------------------------------------------------
 # all packages should already be installed, we just need to load them
-p <- c("sf", "terra", "mapview")
+p <- c("sf", "stars", "mapview")
 lapply(p, library, character.only=T)
 
 # Data ------------------------------------------------------
