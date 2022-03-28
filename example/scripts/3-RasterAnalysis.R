@@ -20,7 +20,7 @@ f <- function(x) { length(which(x == 4)) / length(x) }
 # aggregated for each ruelle individually
 tot <- aggregate(cc, buff, f)
 # now add the percent canopy values to the buffer dataset
-buff$percan <- tot$canopy.cover.tif
+buff$percan <- tot$`canopy-cover.tif`
 
 # NOTE: if we were doing an analysis with a raster like temperature
 # we could aggregate across each buffer and return a value using a function - like mean, max, min, etc.
