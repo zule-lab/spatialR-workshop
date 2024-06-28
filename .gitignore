@@ -39,3 +39,5 @@ vignettes/*.pdf
 .Renviron
 example/.directory
 example/input/.directory
+
+/.quarto/
