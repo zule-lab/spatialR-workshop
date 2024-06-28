@@ -11,69 +11,90 @@
     "href": "index.html#very-briefly---some-advantages-of-r",
     "title": "ZULE SpatialR Workshop",
     "section": "Very Briefly - Some Advantages of R",
-    "text": "Very Briefly - Some Advantages of R\n\nReproducibility/Documentation\nContinuity\nVisualization\nRESOURCES (see the end of this presentation)\nAll the other usual stuff\n\n\n.footnote[fig. source]"
+    "text": "Very Briefly - Some Advantages of R\n\n\n\n \n\n\n\n\n\n\nReproducibility/documentation\nContinuity\nVisualization\nResources (see the end of this presentation)\nAll the other usual stuff"
   },
   {
     "objectID": "index.html#package-network",
     "href": "index.html#package-network",
     "title": "ZULE SpatialR Workshop",
     "section": "Package network",
-    "text": "Package network\nLOTS of packages for spatial analysis in R - can get really specific for specific analysis types/goals. Today, we are going to focus on absolute basics, to get data into R, visualize it, and do some simple (and sometimes less simple) analyses:\n\nVector data -&gt; sf\nRaster data -&gt; stars or terra\nInteractive visualization -&gt; mapview\nBasemaps -&gt; osmdata, basemaps, ggmaps\nStatic visualization -&gt; ggplot2"
+    "text": "Package network\nLOTS of packages for spatial analysis in R - can get really specific for certain analysis types/goals. The packages below will allow you do 95% of the spatial analyses and visualizations that you want to do in R:\n\nVector data -&gt; sf\nRaster data -&gt; stars or terra\nInteractive visualization -&gt; mapview\nBasemaps -&gt; osmdata, basemapR, ggmaps\nStatic visualization -&gt; ggplot2"
   },
   {
-    "objectID": "index.html#data-exploration",
-    "href": "index.html#data-exploration",
+    "objectID": "index.html#spatial-data-types",
+    "href": "index.html#spatial-data-types",
     "title": "ZULE SpatialR Workshop",
-    "section": "Data Exploration",
-    "text": "Data Exploration\nThere are some really key things to note when doing data exploration:\n\nDO data exploration (always) but especially spatial data\n\n–\n\nAlways make sure you have appropriate, matching CRS\n\n–\n\nInspect your attributes - including geometry type\n\n–\n\nA couple good packages for rasters that are good for different things: terra and stars are two basic\n\n–\n\nIf you use GitHub, pay attention to file size"
+    "section": "Spatial Data Types",
+    "text": "Spatial Data Types"
   },
   {
-    "objectID": "index.html#making-a-map-in-r-general-workflow",
-    "href": "index.html#making-a-map-in-r-general-workflow",
+    "objectID": "index.html#projections",
+    "href": "index.html#projections",
     "title": "ZULE SpatialR Workshop",
-    "section": "Making a map in R: general workflow",
-    "text": "Making a map in R: general workflow\n[obviously these steps aren’t right]\n\n?? Set up computer correctly? #[idk but i know you had to do some crazy stuff to my computer before sf would work]\nFormat your data\nGet basemap? [set projection]\nImport data as [something]\n\n4.5. Visualize map (ex using ggplot2)\n\nAdjust/add visuals\n\n\nex: boundary boxes, open street map (??)\n\n\nSpatial calculations\n\n\nexs: rasters intersection, percent canopy cover CMM, buffers, intersections in general"
+    "section": "Projections",
+    "text": "Projections\n\n\n\nMost common projection is WGS 84 (EPSG: 4326)\nOften a projection that uses meters as units is useful, for us NAD83/MTM Zone 8 can be useful (EPSG: 32188)\nProjection codes can be found at epsg.io"
   },
   {
-    "objectID": "index.html#vector-analysis-with-sf",
-    "href": "index.html#vector-analysis-with-sf",
+    "objectID": "index.html#general-workflow",
+    "href": "index.html#general-workflow",
     "title": "ZULE SpatialR Workshop",
-    "section": "Vector Analysis with sf",
-    "text": "Vector Analysis with sf\nMerge polygons with the same ruelle IDs\n\nrv_m &lt;- rv |&gt;\n  dplyr::group_by(RUELLE_ID) |&gt;\n  dplyr::summarise(geometry = st_union(geometry), \n                   nhood = first(PROPRIETAI),\n                   codenhood = first(CODE_ARR),\n                   date = first(DATE_AMENA))"
+    "section": "General Workflow",
+    "text": "General Workflow\n\nInstall & load packages\nIdentify type of spatial data (vector vs raster)\nImport data (csv, shapefile, geopackage, tif) (+ visualize)\nAssign projection and transform data to match (+ visualize)\nDo any necessary spatial calculations (+ visualize)\n\ne.g., buffers, intersections, etc.\n\nPrepare for mapping\n\nbounding boxes, basemaps, etc.\n\nMap"
   },
   {
-    "objectID": "index.html#vector-analysis-with-sf-1",
-    "href": "index.html#vector-analysis-with-sf-1",
+    "objectID": "index.html#step-1-install-and-load-packages",
+    "href": "index.html#step-1-install-and-load-packages",
     "title": "ZULE SpatialR Workshop",
-    "section": "Vector Analysis with sf",
-    "text": "Vector Analysis with sf\nCalculate area of our sampling sites\n\nrv_m$area &lt;- st_area(rv_m) \nclass(rv_m$area) # this function returns a vector of class \"units\" \n# if we want to use this info in future operations - we need to convert from units to double\nrv_m$area &lt;- as.double(rv_m$area)"
+    "section": "Step 1: Install and load packages",
+    "text": "Step 1: Install and load packages\n\ninstall.packages(c('sf', 'stars', 'mapview', 'ggplot2', \n                   'dplyr', 'osmdata', 'basemaps'))\n\nsource('scripts/0-packages.R')"
   },
   {
-    "objectID": "index.html#vector-analysis-with-sf-2",
-    "href": "index.html#vector-analysis-with-sf-2",
+    "objectID": "index.html#step-23-identify-type-of-data-import",
+    "href": "index.html#step-23-identify-type-of-data-import",
     "title": "ZULE SpatialR Workshop",
-    "section": "Vector Analysis with sf",
-    "text": "Vector Analysis with sf\nProduce buffers surrounding sites of interest and produce random sampling points for each\n\nbuff &lt;- st_buffer(rv_m, 50) # important note: our projection is in m so \nsamp &lt;- st_sample(rv_m, c(3,3), type = \"random\", by_polygon = F)\nsamp &lt;- st_as_sf(samp)"
+    "section": "Step 2/3: Identify type of data & Import",
+    "text": "Step 2/3: Identify type of data & Import\n\nVector: sfRaster: stars\n\n\n\n# let's load in the Ruelles Vertes data \n# data from https://donnees.montreal.ca/ville-de-montreal/ruelles-vertes\n# shapefile containing polygons for 935 ruelles vertes across Montreal\n\nrv &lt;- read_sf(\"input/ruelles-vertes.shp\")\n\n\n\n\n# okay, now let's load in some canopy cover data \n# tif file containing pixels of land cover type across Montreal\ncc &lt;- read_stars(\"input/canopy-cover.tif\")"
   },
   {
-    "objectID": "index.html#raster-analysis-with-stars",
-    "href": "index.html#raster-analysis-with-stars",
+    "objectID": "index.html#step-4-projections",
+    "href": "index.html#step-4-projections",
     "title": "ZULE SpatialR Workshop",
-    "section": "Raster Analysis with stars",
-    "text": "Raster Analysis with stars\nRaster analysis can be a bit trickier but using stars for rasters allows us to work tightly with the sf package.\nFunctions aggregate and st_extract can be especially useful, depending on our goals"
+    "section": "Step 4: Projections",
+    "text": "Step 4: Projections\n\n# let's check the projections of both of our datasets \nrv\n\ncc \n\n# unfortunately, they don't match (they rarely do!)\n# the projection of canopy is in metres, so we will project the ruelles to match it \nrv_t &lt;- st_transform(rv, st_crs(cc))\n\n# since the crs is NAD83 MTM Zone 8, we could also use the ESPG code to reproject\nrv_t_code &lt;- st_transform(rv, 32188)"
   },
   {
-    "objectID": "index.html#visualization",
-    "href": "index.html#visualization",
+    "objectID": "index.html#step-5-spatial-calculations",
+    "href": "index.html#step-5-spatial-calculations",
     "title": "ZULE SpatialR Workshop",
-    "section": "Visualization",
-    "text": "Visualization\nGoing to work through a bit more of a complex example but the take-home is that your visualizations can scale up or scale down as you wish!\n\nosmdata is a REALLY useful package for grabbing layers/features that you can use in your basemaps\ngeom_sf is the function for plotting a sf object in ggplot\ngeom_stars is the function for plotting a stars object in ggplot\nthere are other packages you can use for spatial data visualization… use whatever is easiest for you! Another one I love is called tmap"
+    "section": "Step 5: Spatial Calculations",
+    "text": "Step 5: Spatial Calculations\n\nVector: sfRaster: stars\n\n\n\n# merge polygons with the same IDs\nrv_m &lt;- rv_t |&gt;\n  group_by(RUELLE_ID) |&gt;\n  summarise(geometry = st_union(geometry), \n                   nhood = first(PROPRIETAI),\n                   codenhood = first(CODE_ARR),\n                   date = first(DATE_AMENA))\n\n# calculate area of our sampling sites \nrv_a &lt;- rv_m |&gt; \n  mutate(area = st_area(geometry))\n# when we inspect what kind of data this is, it is a vector of class \"units\"\nclass(rv_a$area)\n# if we want to use this info in future operations - we need to convert from units to double\nrv_a &lt;- rv_a |&gt; \n  mutate(area = as.double(area))\n\n# produce buffers surrounding sites of interest\nbuffers &lt;- st_buffer(rv_a, 50) #NOTE: units of projection are in meters\n\n# sample 3 random sampling points within each ruelle \nsamp &lt;- st_sample(rv_a, c(3,3), type = \"random\", by_polygon = F) |&gt;\n  st_as_sf()\n\n\n\n\n# let's intersect our land use/canopy cover with the buffers we created \ncc_int &lt;- cc[buffers]\n\n\n# for each ruelle's buffer, let's calculate % canopy cover\n# calculate canopy cover by dividing number of pixels == 4 (canopy) by total number of pixels within a buffer\nbuff_can &lt;- aggregate(cc, buffers, FUN = function(x) sum(x == 4)/length(x)) |&gt;\n    st_as_sf() |&gt;\n    rename(percan_2021 = `canopy-cover.tif`) |&gt;\n    mutate(percan_2021 = round(percan_2021, 2))"
+  },
+  {
+    "objectID": "index.html#step-6-mapping-prep",
+    "href": "index.html#step-6-mapping-prep",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Step 6: Mapping Prep",
+    "text": "Step 6: Mapping Prep\n\nbasemapsosmdataggmaps"
+  },
+  {
+    "objectID": "index.html#step-7-map",
+    "href": "index.html#step-7-map",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Step 7: Map!",
+    "text": "Step 7: Map!\n\nVectorRasterVector + Raster"
+  },
+  {
+    "objectID": "index.html#some-troubleshooting-tips",
+    "href": "index.html#some-troubleshooting-tips",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Some Troubleshooting Tips",
+    "text": "Some Troubleshooting Tips\n\nDo data exploration (always) but especially spatial data every step of the way (mapview!!)\n\nAlways make sure you have appropriate, matching projections\n\nInspect your attributes - including geometry type\n\nIf you use GitHub, pay attention to file size"
   },
   {
     "objectID": "index.html#resources",
     "href": "index.html#resources",
     "title": "ZULE SpatialR Workshop",
     "section": "Resources",
-    "text": "Resources\n\nsf\nstars\nterra\nosmdata\nggplot2\nIntro to sf and stars\nterra vs stars\nosmdata feature keys\nterra methods"
+    "text": "Resources\n\nCoordinate systems and projections\nsf\nstars\nterra\nosmdata\nggplot2\nIntro to sf and stars\nterra vs stars\nosmdata feature keys\nterra methods"
   }
 ]

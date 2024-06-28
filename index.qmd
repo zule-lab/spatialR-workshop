@@ -1,7 +1,6 @@
 ---
 title: "ZULE SpatialR Workshop"
 author: Isabella C Richmond
-date: "`r paste0('March 28, 2022 [updated: ', paste(month.name[data.table::month(Sys.Date())], data.table::mday(Sys.Date()), data.table::year(Sys.Date())), ']')`"
 format: 
   revealjs:
     theme: simple
@@ -9,149 +8,251 @@ format:
 editor: visual
 ---
 
-## Spatial Analysis Software  
-Our lab's expertise lies in MANY softwares (which is extremely cool), they include:  
-- ArcGIS (proprietary/click & point)
+## Spatial Analysis Software
 
---
+Our lab's expertise lies in MANY softwares (which is extremely cool), they include:
 
-- ENVI (proprietary)
+-   ArcGIS (proprietary/click & point)
+-   ENVI (proprietary)
+-   QGIS (click & point)
+-   Google Earth Engine
+-   R
 
---
+## Very Briefly - Some Advantages of R
 
-- QGIS (click & point)
+::: {layout="[[-1], [1], [-1]]"}
+::: columns
+::: {.column width="50%"}
+-   Reproducibility/documentation
+-   Continuity
+-   Visualization
+-   Resources (see the end of this presentation)
+-   All the other usual stuff
+:::
 
---
-
-- Google Earth Engine 
-
---
-
-- R   
-  
---
-  
-<br><br><br>
-Why do you prefer other softwares over R for your spatial analysis?
-
-
-## Very Briefly - Some Advantages 
-- Reproducibility/Documentation 
-- Continuity 
-- Visualization
-- RESOURCES (see the end of this presentation)
-- All the other usual stuff 
-
+::: {.column width="50%"}
 ![](presentation_imgs/esri.jpeg)
+:::
+:::
+:::
 
-.footnote[[fig. source](https://twitter.com/Donny_V/status/1056208331830894592)]
+## Package network
 
-## Package network 
-LOTS of packages for spatial analysis in R - can get really specific for specific analysis types/goals. Today, we are going to focus on absolute basics, to get data into R, visualize it, and do some simple (and sometimes less simple) analyses:  
+LOTS of packages for spatial analysis in R - can get really specific for certain analysis types/goals. The packages below will allow you do 95% of the spatial analyses and visualizations that you want to do in R:
 
-1. Vector data -> `sf`
-2. Raster data -> `stars` or `terra` 
-3. Interactive visualization -> `mapview`
-4. Basemaps -> `osmdata` 
-5. Static visualization -> `ggplot2` 
+1.  Vector data -\> [`sf`](https://r-spatial.github.io/sf/)
+2.  Raster data -\> [`stars`](https://r-spatial.github.io/stars/) or [`terra`](https://rspatial.org/terra/pkg/1-introduction.html)
+3.  Interactive visualization -\> [`mapview`](https://r-spatial.github.io/mapview/)
+4.  Basemaps -\> [`osmdata`](https://docs.ropensci.org/osmdata/), [`basemapR`](https://github.com/Chrisjb/basemapR), [`ggmaps`](https://github.com/dkahle/ggmap)
+5.  Static visualization -\> [`ggplot2`](https://ggplot2.tidyverse.org/)
 
-.footnote[[sf](https://r-spatial.github.io/sf/), [stars](https://r-spatial.github.io/stars/), [terra](https://rspatial.org/terra/pkg/1-introduction.html), [mapview](https://r-spatial.github.io/mapview/), [osmdata](https://docs.ropensci.org/osmdata/), 
-[ggplot2](https://ggplot2.tidyverse.org/)]
+## Spatial Data Types
 
-## Data Exploration 
-There are some really key things to note when doing data exploration:  
+![](presentation_imgs/rastervector.jpg)
 
-1. DO data exploration (always) but especially spatial data   
+## Projections
 
---
+::: columns
+::: {.column width="50%"}
+-   Most common projection is WGS 84 (EPSG: 4326)
+-   Often a projection that uses meters as units is useful, for us NAD83/MTM Zone 8 can be useful (EPSG: 32188)
+-   Projection codes can be found at [epsg.io](https://epsg.io/)
+:::
 
-2. Always make sure you have appropriate, matching CRS   
+::: {.column width="50%"}
+::: {layout="[[-1], [1], [-1]]"}
+![](presentation_imgs/PROJ.jpg)
+:::
+:::
+:::
 
---
+## General Workflow {.scrollable}
 
-3. Inspect your attributes - including **geometry type**  
+1.  Install & load packages
 
---
+2.  Identify type of spatial data (vector vs raster)
 
-4. A couple good packages for rasters that are good for different things: `terra` and `stars` are two basic   
+3.  Import data (csv, shapefile, geopackage, tif) (+ visualize)
 
---
+4.  Assign projection and transform data to match (+ visualize)
 
-5. If you use GitHub, pay attention to file size  
+5.  Do any necessary spatial calculations (+ visualize)
 
+    -   e.g., buffers, intersections, etc.
 
-## Vector Analysis with sf 
-Merge polygons with the same ruelle IDs
+6.  Prepare for mapping
 
-```{r, eval = F, echo = T}
-rv_m <- rv |>
-  dplyr::group_by(RUELLE_ID) |>
-  dplyr::summarise(geometry = st_union(geometry), 
+    -   bounding boxes, basemaps, etc.
+
+7.  Map
+
+## Step 1: Install and load packages
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: install
+
+install.packages(c('sf', 'stars', 'mapview', 'ggplot2', 
+                   'dplyr', 'osmdata', 'basemaps'))
+
+source('scripts/0-packages.R')
+
+```
+
+## Step 2/3: Identify type of data & Import
+
+::: panel-tabset
+## Vector: `sf`
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: read-sf
+
+# let's load in the Ruelles Vertes data 
+# data from https://donnees.montreal.ca/ville-de-montreal/ruelles-vertes
+# shapefile containing polygons for 935 ruelles vertes across Montreal
+
+rv <- read_sf("input/ruelles-vertes.shp")
+
+```
+
+## Raster: `stars`
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: read-stars
+
+# okay, now let's load in some canopy cover data 
+# tif file containing pixels of land cover type across Montreal
+cc <- read_stars("input/canopy-cover.tif")
+```
+:::
+
+## Step 4: Projections
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: proj
+
+# let's check the projections of both of our datasets 
+rv
+
+cc 
+
+# unfortunately, they don't match (they rarely do!)
+# the projection of canopy is in metres, so we will project the ruelles to match it 
+rv_t <- st_transform(rv, st_crs(cc))
+
+# since the crs is NAD83 MTM Zone 8, we could also use the ESPG code to reproject
+rv_t_code <- st_transform(rv, 32188)
+
+```
+
+## Step 5: Spatial Calculations
+
+::: panel-tabset
+## Vector: `sf`
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: calc-sf
+
+# merge polygons with the same IDs
+rv_m <- rv_t |>
+  group_by(RUELLE_ID) |>
+  summarise(geometry = st_union(geometry), 
                    nhood = first(PROPRIETAI),
                    codenhood = first(CODE_ARR),
                    date = first(DATE_AMENA))
-```
 
-
-## Vector Analysis with sf 
-Calculate area of our sampling sites 
-```{r, eval = F, echo = T}
-rv_m$area <- st_area(rv_m) 
-class(rv_m$area) # this function returns a vector of class "units" 
+# calculate area of our sampling sites 
+rv_a <- rv_m |> 
+  mutate(area = st_area(geometry))
+# when we inspect what kind of data this is, it is a vector of class "units"
+class(rv_a$area)
 # if we want to use this info in future operations - we need to convert from units to double
-rv_m$area <- as.double(rv_m$area)
+rv_a <- rv_a |> 
+  mutate(area = as.double(area))
 
+# produce buffers surrounding sites of interest
+buffers <- st_buffer(rv_a, 50) #NOTE: units of projection are in meters
+
+# sample 3 random sampling points within each ruelle 
+samp <- st_sample(rv_a, c(3,3), type = "random", by_polygon = F) |>
+  st_as_sf()
 ```
 
-## Vector Analysis with sf 
-Produce buffers surrounding sites of interest and produce random sampling points for each 
-```{r, eval = F, echo = T}
-buff <- st_buffer(rv_m, 50) # important note: our projection is in m so 
-samp <- st_sample(rv_m, c(3,3), type = "random", by_polygon = F)
-samp <- st_as_sf(samp)
-```
+## Raster: `stars`
 
-## Raster Analysis with stars
-Raster analysis can be a bit trickier but using `stars` for rasters allows us to work tightly with the `sf` package.   
+```{r}
+#| echo: true
+#| eval: false
+#| label: calc-stars
 
-Functions `aggregate` and `st_extract` can be especially useful, depending on our goals 
-
-```{r, eval = T, echo = F, warning = F, message = F, fig.align='center'}
-library(sf)
-library(stars)
-library(mapview)
-
-# Data ------------------------------------------------------
-buff <- readRDS("C:/Users/I_RICHMO/Documents/Repositories/workshops/spatial-r/example/input/cleaned/buffers.rds")
-cc <- read_stars("C:/Users/I_RICHMO/Documents/Repositories/workshops/spatial-r/example/input/canopy-cover.tif")
-
-# Buffers ---------------------------------------------------
 # let's intersect our land use/canopy cover with the buffers we created 
-cc_int <- cc[buff]
-mapview(cc_int)
+cc_int <- cc[buffers]
 
+
+# for each ruelle's buffer, let's calculate % canopy cover
+# calculate canopy cover by dividing number of pixels == 4 (canopy) by total number of pixels within a buffer
+buff_can <- aggregate(cc, buffers, FUN = function(x) sum(x == 4)/length(x)) |>
+    st_as_sf() |>
+    rename(percan_2021 = `canopy-cover.tif`) |>
+    mutate(percan_2021 = round(percan_2021, 2))
 ```
+:::
+
+## Step 6: Mapping Prep
+
+::: panel-tabset
+
+## `basemaps`
 
 
-## Visualization
-Going to work through a bit more of a complex example but the take-home is that your visualizations can **scale up or scale down** as you wish! 
-
-- `osmdata` is a REALLY useful package for grabbing layers/features that you can use in your basemaps 
-- `geom_sf` is the function for plotting a sf object in ggplot 
-- `geom_stars` is the function for plotting a stars object in ggplot 
-
-- there are other packages you can use for spatial data visualization... use whatever is easiest for you! Another one I love is called `tmap`
+## `osmdata`
 
 
-## Resources 
-- [sf](https://r-spatial.github.io/sf/)
-- [stars](https://r-spatial.github.io/stars/articles/stars1.html) 
-- [terra](https://rspatial.org/terra/)
-- [osmdata](https://docs.ropensci.org/osmdata/)
-- [ggplot2](https://ggplot2.tidyverse.org/)
-- [Intro to sf and stars](https://keen-swartz-3146c4.netlify.app/sf.html)
-- [terra vs stars](https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-stars-packages/)
-- [osmdata feature keys](https://wiki.openstreetmap.org/wiki/Map_features)
-- [tmap](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
-- [terra methods](https://rspatial.github.io/terra/reference/terra-package.html)
+## `ggmaps`
 
+
+
+:::
+
+
+## Step 7: Map!
+
+::: panel-tabset
+
+## Vector
+
+## Raster
+
+## Vector + Raster
+
+
+:::
+
+## Some Troubleshooting Tips
+
+-   Do data exploration (always) but especially spatial data every step of the way (`mapview`!!)\
+-   Always make sure you have appropriate, matching projections\
+-   Inspect your attributes - including **geometry type**\
+-   If you use GitHub, pay attention to file size
+
+## Resources {.scrollable}
+
+-   [Coordinate systems and projections](https://pro.arcgis.com/en/pro-app/latest/help/mapping/properties/coordinate-systems-and-projections.htm)
+-   [sf](https://r-spatial.github.io/sf/)
+-   [stars](https://r-spatial.github.io/stars/articles/stars1.html)
+-   [terra](https://rspatial.org/terra/)
+-   [osmdata](https://docs.ropensci.org/osmdata/)
+-   [ggplot2](https://ggplot2.tidyverse.org/)
+-   [Intro to sf and stars](https://keen-swartz-3146c4.netlify.app/sf.html)
+-   [terra vs stars](https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-stars-packages/)
+-   [osmdata feature keys](https://wiki.openstreetmap.org/wiki/Map_features)
+-   [terra methods](https://rspatial.github.io/terra/reference/terra-package.html)
