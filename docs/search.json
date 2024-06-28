@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "index.html#spatial-analysis-software",
+    "href": "index.html#spatial-analysis-software",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Spatial Analysis Software",
+    "text": "Spatial Analysis Software\nOur lab’s expertise lies in MANY softwares (which is extremely cool), they include:\n\nArcGIS (proprietary/click & point)\nENVI (proprietary)\nQGIS (click & point)\nGoogle Earth Engine\nR"
+  },
+  {
+    "objectID": "index.html#very-briefly---some-advantages-of-r",
+    "href": "index.html#very-briefly---some-advantages-of-r",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Very Briefly - Some Advantages of R",
+    "text": "Very Briefly - Some Advantages of R\n\nReproducibility/Documentation\nContinuity\nVisualization\nRESOURCES (see the end of this presentation)\nAll the other usual stuff\n\n\n.footnote[fig. source]"
+  },
+  {
+    "objectID": "index.html#package-network",
+    "href": "index.html#package-network",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Package network",
+    "text": "Package network\nLOTS of packages for spatial analysis in R - can get really specific for specific analysis types/goals. Today, we are going to focus on absolute basics, to get data into R, visualize it, and do some simple (and sometimes less simple) analyses:\n\nVector data -&gt; sf\nRaster data -&gt; stars or terra\nInteractive visualization -&gt; mapview\nBasemaps -&gt; osmdata, basemaps, ggmaps\nStatic visualization -&gt; ggplot2"
+  },
+  {
+    "objectID": "index.html#data-exploration",
+    "href": "index.html#data-exploration",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Data Exploration",
+    "text": "Data Exploration\nThere are some really key things to note when doing data exploration:\n\nDO data exploration (always) but especially spatial data\n\n–\n\nAlways make sure you have appropriate, matching CRS\n\n–\n\nInspect your attributes - including geometry type\n\n–\n\nA couple good packages for rasters that are good for different things: terra and stars are two basic\n\n–\n\nIf you use GitHub, pay attention to file size"
+  },
+  {
+    "objectID": "index.html#making-a-map-in-r-general-workflow",
+    "href": "index.html#making-a-map-in-r-general-workflow",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Making a map in R: general workflow",
+    "text": "Making a map in R: general workflow\n[obviously these steps aren’t right]\n\n?? Set up computer correctly? #[idk but i know you had to do some crazy stuff to my computer before sf would work]\nFormat your data\nGet basemap? [set projection]\nImport data as [something]\n\n4.5. Visualize map (ex using ggplot2)\n\nAdjust/add visuals\n\n\nex: boundary boxes, open street map (??)\n\n\nSpatial calculations\n\n\nexs: rasters intersection, percent canopy cover CMM, buffers, intersections in general"
+  },
+  {
+    "objectID": "index.html#vector-analysis-with-sf",
+    "href": "index.html#vector-analysis-with-sf",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Vector Analysis with sf",
+    "text": "Vector Analysis with sf\nMerge polygons with the same ruelle IDs\n\nrv_m &lt;- rv |&gt;\n  dplyr::group_by(RUELLE_ID) |&gt;\n  dplyr::summarise(geometry = st_union(geometry), \n                   nhood = first(PROPRIETAI),\n                   codenhood = first(CODE_ARR),\n                   date = first(DATE_AMENA))"
+  },
+  {
+    "objectID": "index.html#vector-analysis-with-sf-1",
+    "href": "index.html#vector-analysis-with-sf-1",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Vector Analysis with sf",
+    "text": "Vector Analysis with sf\nCalculate area of our sampling sites\n\nrv_m$area &lt;- st_area(rv_m) \nclass(rv_m$area) # this function returns a vector of class \"units\" \n# if we want to use this info in future operations - we need to convert from units to double\nrv_m$area &lt;- as.double(rv_m$area)"
+  },
+  {
+    "objectID": "index.html#vector-analysis-with-sf-2",
+    "href": "index.html#vector-analysis-with-sf-2",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Vector Analysis with sf",
+    "text": "Vector Analysis with sf\nProduce buffers surrounding sites of interest and produce random sampling points for each\n\nbuff &lt;- st_buffer(rv_m, 50) # important note: our projection is in m so \nsamp &lt;- st_sample(rv_m, c(3,3), type = \"random\", by_polygon = F)\nsamp &lt;- st_as_sf(samp)"
+  },
+  {
+    "objectID": "index.html#raster-analysis-with-stars",
+    "href": "index.html#raster-analysis-with-stars",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Raster Analysis with stars",
+    "text": "Raster Analysis with stars\nRaster analysis can be a bit trickier but using stars for rasters allows us to work tightly with the sf package.\nFunctions aggregate and st_extract can be especially useful, depending on our goals"
+  },
+  {
+    "objectID": "index.html#visualization",
+    "href": "index.html#visualization",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Visualization",
+    "text": "Visualization\nGoing to work through a bit more of a complex example but the take-home is that your visualizations can scale up or scale down as you wish!\n\nosmdata is a REALLY useful package for grabbing layers/features that you can use in your basemaps\ngeom_sf is the function for plotting a sf object in ggplot\ngeom_stars is the function for plotting a stars object in ggplot\nthere are other packages you can use for spatial data visualization… use whatever is easiest for you! Another one I love is called tmap"
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "ZULE SpatialR Workshop",
+    "section": "Resources",
+    "text": "Resources\n\nsf\nstars\nterra\nosmdata\nggplot2\nIntro to sf and stars\nterra vs stars\nosmdata feature keys\nterra methods"
+  }
+]
