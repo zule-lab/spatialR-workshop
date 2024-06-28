@@ -1,0 +1,4 @@
+project:
+  title: "SpatialR Workshop"
+  type: website
+  output-dir: docs
