@@ -1,24 +1,15 @@
 ---
 title: "ZULE SpatialR Workshop"
-author: "Isabella Richmond"
+author: Isabella C Richmond
 date: "`r paste0('March 28, 2022 [updated: ', paste(month.name[data.table::month(Sys.Date())], data.table::mday(Sys.Date()), data.table::year(Sys.Date())), ']')`"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      beforeInit: "macros-slides.js"
-      highlightLines: true
-      countIncrementalSlides: false
-      slideNumberFormat: |
-        <div class="progress-bar-container">
-          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
-          </div>
-        </div>`
-    css: [metropolis, metropolis-fonts, "extras-slides.css"]
+format: 
+  revealjs:
+    theme: simple
+    slide-number: c
+editor: visual
 ---
-class: introduction
-# Spatial Analysis Software  
+
+## Spatial Analysis Software  
 Our lab's expertise lies in MANY softwares (which is extremely cool), they include:  
 - ArcGIS (proprietary/click & point)
 
@@ -43,24 +34,19 @@ Our lab's expertise lies in MANY softwares (which is extremely cool), they inclu
 <br><br><br>
 Why do you prefer other softwares over R for your spatial analysis?
 
----
-class: introduction 
-# Very Briefly - Some Advantages 
+
+## Very Briefly - Some Advantages 
 - Reproducibility/Documentation 
 - Continuity 
 - Visualization
 - RESOURCES (see the end of this presentation)
 - All the other usual stuff 
 
-```{r, echo=F, out.height='35%', out.width='65%', fig.align='center'}
-knitr::include_graphics("esri.jpeg")
-```
+![](presentation_imgs/esri.jpeg)
 
 .footnote[[fig. source](https://twitter.com/Donny_V/status/1056208331830894592)]
----
 
-class: mainconcepts
-# Package network 
+## Package network 
 LOTS of packages for spatial analysis in R - can get really specific for specific analysis types/goals. Today, we are going to focus on absolute basics, to get data into R, visualize it, and do some simple (and sometimes less simple) analyses:  
 
 1. Vector data -> `sf`
@@ -71,9 +57,8 @@ LOTS of packages for spatial analysis in R - can get really specific for specifi
 
 .footnote[[sf](https://r-spatial.github.io/sf/), [stars](https://r-spatial.github.io/stars/), [terra](https://rspatial.org/terra/pkg/1-introduction.html), [mapview](https://r-spatial.github.io/mapview/), [osmdata](https://docs.ropensci.org/osmdata/), 
 [ggplot2](https://ggplot2.tidyverse.org/)]
----
-class: chapterone 
-# Data Exploration 
+
+## Data Exploration 
 There are some really key things to note when doing data exploration:  
 
 1. DO data exploration (always) but especially spatial data   
@@ -95,9 +80,7 @@ There are some really key things to note when doing data exploration:
 5. If you use GitHub, pay attention to file size  
 
 
----
-class: chaptertwo
-# Vector Analysis with sf 
+## Vector Analysis with sf 
 Merge polygons with the same ruelle IDs
 
 ```{r, eval = F, echo = T}
@@ -109,9 +92,8 @@ rv_m <- rv |>
                    date = first(DATE_AMENA))
 ```
 
----
-class: chaptertwo
-# Vector Analysis with sf 
+
+## Vector Analysis with sf 
 Calculate area of our sampling sites 
 ```{r, eval = F, echo = T}
 rv_m$area <- st_area(rv_m) 
@@ -121,9 +103,7 @@ rv_m$area <- as.double(rv_m$area)
 
 ```
 
----
-class: chaptertwo
-# Vector Analysis with sf 
+## Vector Analysis with sf 
 Produce buffers surrounding sites of interest and produce random sampling points for each 
 ```{r, eval = F, echo = T}
 buff <- st_buffer(rv_m, 50) # important note: our projection is in m so 
@@ -131,9 +111,7 @@ samp <- st_sample(rv_m, c(3,3), type = "random", by_polygon = F)
 samp <- st_as_sf(samp)
 ```
 
----
-class: chaptertwo 
-# Raster Analysis with stars
+## Raster Analysis with stars
 Raster analysis can be a bit trickier but using `stars` for rasters allows us to work tightly with the `sf` package.   
 
 Functions `aggregate` and `st_extract` can be especially useful, depending on our goals 
@@ -154,9 +132,8 @@ mapview(cc_int)
 
 ```
 
----
-class: chapterthree 
-# Visualization
+
+## Visualization
 Going to work through a bit more of a complex example but the take-home is that your visualizations can **scale up or scale down** as you wish! 
 
 - `osmdata` is a REALLY useful package for grabbing layers/features that you can use in your basemaps 
@@ -165,9 +142,8 @@ Going to work through a bit more of a complex example but the take-home is that 
 
 - there are other packages you can use for spatial data visualization... use whatever is easiest for you! Another one I love is called `tmap`
 
----
-class: mainconcepts 
-# Resources 
+
+## Resources 
 - [sf](https://r-spatial.github.io/sf/)
 - [stars](https://r-spatial.github.io/stars/articles/stars1.html) 
 - [terra](https://rspatial.org/terra/)
@@ -179,7 +155,3 @@ class: mainconcepts
 - [tmap](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
 - [terra methods](https://rspatial.github.io/terra/reference/terra-package.html)
 
-```{r, eval = F, echo = F}
-library(pagedown)
-pagedown::chrome_print("/home/icrichmond/Repositories/workshops/data-cleaning/presentation/presentation-slides.html")
-```
