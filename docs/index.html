@@ -596,16 +596,72 @@ Isabella C Richmond
 <section id="step-6-mapping-prep" class="slide level2">
 <h2>Step 6: Mapping Prep</h2>
 <div class="panel-tabset">
-<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1"><code>basemaps</code></a></li><li><a href="#tabset-3-2"><code>osmdata</code></a></li><li><a href="#tabset-3-3"><code>ggmaps</code></a></li></ul>
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1"><code>basemaps</code></a></li><li><a href="#tabset-3-2"><code>osmdata</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1">
-
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># set up bounding box - order: xmin, ymin, xmax, ymax</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>bb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">xmin =</span> <span class="sc">-</span><span class="fl">74.0788</span>,</span>
+<span id="cb7-3"><a href="#cb7-3"></a>        <span class="at">ymin =</span> <span class="fl">45.3414</span>,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>        <span class="at">xmax =</span> <span class="sc">-</span><span class="fl">73.3894</span>,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>        <span class="at">ymax =</span> <span class="fl">45.7224</span>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co"># or use layer to create bounding box </span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co"># this creates a bounding box around all the buffers we created</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>bb_layer <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(buffers)</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co"># view all available maps </span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="fu">get_maptypes</span>()</span>
+<span id="cb7-13"><a href="#cb7-13"></a></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co"># you can add the basemap as a layer</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>bbox <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(bb)</span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="fu">st_crs</span>(bbox) <span class="ot">=</span> <span class="dv">4326</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-19"><a href="#cb7-19"></a>  <span class="fu">basemap_gglayer</span>(bbox, <span class="at">map_service =</span> <span class="st">"carto"</span>, <span class="at">map_type =</span> <span class="st">"light"</span>) <span class="sc">+</span> </span>
+<span id="cb7-20"><a href="#cb7-20"></a>  <span class="fu">scale_fill_identity</span>() <span class="sc">+</span> </span>
+<span id="cb7-21"><a href="#cb7-21"></a>  <span class="fu">coord_sf</span>()</span>
+<span id="cb7-22"><a href="#cb7-22"></a></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="co"># you can also make it as a ggplot</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="fu">basemap_ggplot</span>(bbox, <span class="at">map_service =</span> <span class="st">"carto"</span>, <span class="at">map_type =</span> <span class="st">"dark"</span>)</span>
+<span id="cb7-25"><a href="#cb7-25"></a></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="co"># and there are different spatial classes you can use, such as stars where the basemap is returned as a stars object</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="fu">basemap_stars</span>(bbox, <span class="at">map_service =</span> <span class="st">"osm"</span>, <span class="at">map_type =</span> <span class="st">"streets"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 <div id="tabset-3-2">
-
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># set up bounding box - order: xmin, ymin, xmax, ymax</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>bb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">xmin =</span> <span class="sc">-</span><span class="fl">74.0788</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>        <span class="at">ymin =</span> <span class="fl">45.3414</span>,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>        <span class="at">xmax =</span> <span class="sc">-</span><span class="fl">73.3894</span>,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>        <span class="at">ymax =</span> <span class="fl">45.7224</span>)</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co"># Island boundary using osmdata</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>mtl <span class="ot">&lt;-</span> <span class="fu">opq</span>(bb) <span class="sc">|&gt;</span> <span class="co"># this make a call for any data found within our coordinates</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">'place'</span>, <span class="at">value =</span> <span class="st">'island'</span>) <span class="sc">|&gt;</span> <span class="co"># we select any features that are places + islands</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>  <span class="fu">osmdata_sf</span>() <span class="co"># transform it into sf object</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co"># we are returned a list of different types of geometries that match our request</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co"># we will select the ones we are interested in and combine</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>multipolys <span class="ot">&lt;-</span> <span class="fu">st_make_valid</span>(mtl<span class="sc">$</span>osm_multipolygons) <span class="co"># grab multipolygons (large islands)</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>polys <span class="ot">&lt;-</span> <span class="fu">st_make_valid</span>(mtl<span class="sc">$</span>osm_polygons) <span class="co"># grab polygons (small islands)</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>polys <span class="ot">&lt;-</span> <span class="fu">st_cast</span>(polys, <span class="st">"MULTIPOLYGON"</span>)</span>
+<span id="cb8-16"><a href="#cb8-16"></a>allpolys <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">st_union</span>(polys, multipolys)) <span class="co"># combine geometries and cast as sf</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="fu">st_crs</span>(allpolys) <span class="ot">=</span> <span class="dv">4326</span> <span class="co"># set CRS as EPSG 4326 </span></span>
+<span id="cb8-18"><a href="#cb8-18"></a></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co"># Water</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="co"># going to do the same thing as above but we want water features within our coordinates</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>water <span class="ot">&lt;-</span> <span class="fu">opq</span>(bb) <span class="sc">|&gt;</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">'natural'</span>, <span class="at">value =</span> <span class="st">'water'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a>  <span class="fu">osmdata_sf</span>()</span>
+<span id="cb8-24"><a href="#cb8-24"></a>wmpols <span class="ot">&lt;-</span> water<span class="sc">$</span>osm_multipolygons</span>
+<span id="cb8-25"><a href="#cb8-25"></a>wmpols <span class="ot">&lt;-</span> <span class="fu">st_cast</span>(wmpols, <span class="st">"MULTIPOLYGON"</span>)</span>
+<span id="cb8-26"><a href="#cb8-26"></a>wmpols <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">st_make_valid</span>(wmpols))</span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="fu">st_crs</span>(wmpols) <span class="ot">=</span> <span class="dv">4326</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a></span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co"># osmdata is super flexible -- you can query just about anything! </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tabset-3-3">
-
 </div>
 </div>
 </div>
