@@ -41,3 +41,5 @@ example/.directory
 example/input/.directory
 
 /.quarto/
+
+example/output/water.gpkg

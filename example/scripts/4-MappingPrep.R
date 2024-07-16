@@ -34,6 +34,12 @@ wmpols <- st_cast(wmpols, "MULTIPOLYGON")
 wmpols <- st_as_sf(st_make_valid(wmpols))
 st_crs(wmpols) = 4326
 
+# save for use in mapping later
+
+write_sf(allpolys, 'output/islands.gpkg')
+write_sf(wmpols, 'output/water.gpkg')
+
+
 
 # basemaps Data Download --------------------------------------------------
 
